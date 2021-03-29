@@ -24,36 +24,42 @@ function playCard() {
       victoryState = false;
     }
   }
-  gameOver(victoryState);
+  displayGameOver(totalCards, victoryState);
 }
 
 // Mostra a tela de vitoria ou derrota
-function gameOver(victoryState) {
-  const gameOver = document.getElementById("game-over");
-  const divCard = document.getElementById("display-card");
+function displayGameOver(totalCards, victoryState) {
+  const gameOverDiv = document.getElementById("game-over");
 
   if (victoryState) {
-    document.getElementById("situation").innerHTML = "Você ganhou! :)";
-    gameOver.classList.add("win");
+    document.getElementById("situation").innerHTML =
+      "Você fez " + totalCards + " pontos e ganhou! :)";
+    gameOverDiv.classList.add("win");
   } else {
-    document.getElementById("situation").innerHTML = "Você perdeu! :(";
-    gameOver.classList.add("lose");
+    document.getElementById("situation").innerHTML =
+      "Você fez " + totalCards + " pontos e  perdeu! :(";
+    gameOverDiv.classList.add("lose");
   }
 
-  displayCards(divCard);
-  gameOver.classList.remove("-none");
+  displayCards(gameOverDiv);
+  gameOverDiv.classList.remove("-none");
 }
 
 // Mostra as cartas na tela de vitoria/derrota
-function displayCards(divCard) {
+function displayCards(gameOverDiv) {
+  const divCard = document.createElement("div");
+  divCard.id = "display-card";
+  divCard.className = "display-card";
+
   matchMake.forEach((gamePlay, index) => {
-    const card = document.createElement("img");
-    const naipeName = getNaipeName(gamePlay.naipeCard);
-    card.src = `/img/${gamePlay.cardNumber}-${naipeName}.png`;
+    let card = document.createElement("img");
+    let naipeName = getNaipeName(gamePlay.naipeCard);
+    card.src = `https://raw.githubusercontent.com/rafaeldellaquila/vinte-um-game/master/img/${gamePlay.cardNumber}-${naipeName}.png`;
     card.id = index;
     card.className = "end-game";
     divCard.appendChild(card);
   });
+  gameOverDiv.appendChild(divCard);
 }
 
 // Seleciona o naipe da carta que será mostrada na tela de vitoria/derrota
@@ -67,14 +73,16 @@ function getNaipeName(naipeIndex) {
   return naipes[naipeIndex];
 }
 
-//Inicia o jogo
-function startGame() {
-  const start = document.getElementById("start");
-  start.classList.add("-none");
-}
-
-//Restarta o jogo
 function restartGame() {
-  location.reload();
-  return false;
+  const start = document.getElementById("start");
+  const gameOverDiv = document.getElementById("game-over");
+  const divCard = document.getElementById("display-card");
+
+  totalCards = 0;
+  matchMake = [];
+  victoryState = null;
+  divCard.remove();
+  start.classList.remove("-none");
+  gameOverDiv.classList.add("-none");
+  gameOverDiv.classList.remove("lose", "win");
 }
